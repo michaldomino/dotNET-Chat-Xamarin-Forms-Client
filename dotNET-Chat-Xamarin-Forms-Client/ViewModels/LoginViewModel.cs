@@ -8,7 +8,30 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
+        private string userName;
+        private string password;
+
         public Command LoginCommand { get; }
+
+        public string UserName
+        {
+            get => userName;
+            set
+            {
+                SetProperty(ref userName, value);
+                OnPropertyChanged();
+            }
+        }
+
+        public string Password
+        {
+            get => password; 
+            set
+            {
+                SetProperty(ref password, value);
+                OnPropertyChanged();
+            }
+        }
 
         public LoginViewModel()
         {
