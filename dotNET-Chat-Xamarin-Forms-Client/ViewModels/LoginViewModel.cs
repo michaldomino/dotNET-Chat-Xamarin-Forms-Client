@@ -1,8 +1,12 @@
-﻿using dotNET_Chat_Xamarin_Forms_Client.Views;
+﻿using dotNET_Chat_Xamarin_Forms_Client.Models;
+using dotNET_Chat_Xamarin_Forms_Client.Views;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Text;
 using Xamarin.Forms;
 
@@ -44,11 +48,17 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         {
             HttpClient httpClient = new HttpClient();
 
-            //NSUrlSessis
+            LoginRequestModel loginRequest = new LoginRequestModel
+            {
+                UserName = "test",
+                Password = "Pswd123_"
+            };
+            var a = JsonConvert.SerializeObject(loginRequest);
             var request = new HttpRequestMessage
             {
-                RequestUri = new Uri("http://192.168.1.87:49375/api/applicationusers/search"),
-                Method = HttpMethod.Get
+                RequestUri = new Uri("http://192.168.1.87:49375/api/authentication/login"),
+                Method = HttpMethod.Post,
+                Content = new StringContent(a, Encoding.UTF8, "application/json")
             };
             //WebRequest webRequest = WebRequest.Create("http://192.168.1.87:49375/api/applicationusers/search");
             //webRequest.Method = "GET";
@@ -57,7 +67,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
-                var a = 5;
+                //var a = 5;
             }
             //WebResponse a = webRequest.GetResponse();
             //a.Con
