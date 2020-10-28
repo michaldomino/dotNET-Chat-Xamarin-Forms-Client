@@ -4,6 +4,7 @@ using dotNET_Chat_Xamarin_Forms_Client.Views;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
@@ -15,6 +16,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         private string email;
         private string password;
         private string confirmPassword;
+        private readonly IDialogService dialogService;
 
         public Command RegisterCommand { get; }
 
@@ -53,13 +55,14 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             get => confirmPassword;
             set
             {
-                SetProperty(ref password, value);
+                SetProperty(ref confirmPassword, value);
                 OnPropertyChanged();
             }
         }
 
         public RegisterViewModel()
         {
+            dialogService = DependencyService.Get<IDialogService>();
             RegisterCommand = new Command(OnRegisterClicked);
         }
 
@@ -67,7 +70,8 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         {
             if (Password != ConfirmPassword)
             {
-                await Application.Current.MainPage.DisplayAlert("Alert", "Passwords do not match", "OK");
+                await dialogService.ShowAlert("Passwords do not match");
+                return;
             }
             IAuthenticationService authenticationService = new AuthenticationService();
             AuthenticationResponseModel responseModel = await authenticationService.Register(UserName, Email, Password);
@@ -76,7 +80,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.Append("Errors: \n");
                 responseModel.Errors.ForEach(it => stringBuilder.Append(it).Append("\n"));
-                await Application.Current.MainPage.DisplayAlert("Alert", stringBuilder.ToString(), "OK");
+                await dialogService.ShowAlert(stringBuilder.ToString());
             }
             else
             {

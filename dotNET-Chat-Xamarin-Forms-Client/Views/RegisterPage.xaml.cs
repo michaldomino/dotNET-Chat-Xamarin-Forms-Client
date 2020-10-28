@@ -1,4 +1,5 @@
-﻿using System;
+﻿using dotNET_Chat_Xamarin_Forms_Client.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Views
         public RegisterPage()
         {
             InitializeComponent();
+            BindingContext = new RegisterViewModel();
         }
     }
 }

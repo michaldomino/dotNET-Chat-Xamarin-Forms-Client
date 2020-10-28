@@ -14,6 +14,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client
             InitializeComponent();
 
             DependencyService.Register<MockDataStore>();
+            DependencyService.Register<IDialogService, DialogService>();
             MainPage = new AppShell();
         }
 

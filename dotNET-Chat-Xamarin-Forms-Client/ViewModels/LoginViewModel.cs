@@ -59,7 +59,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
         private async void OnNewAccountClicked(object obj)
         {
-            await Shell.Current.GoToAsync($"//{nameof(RegisterPage)}");
+            await Application.Current.MainPage.Navigation.PushAsync(new RegisterPage());
         }
     }
 }
