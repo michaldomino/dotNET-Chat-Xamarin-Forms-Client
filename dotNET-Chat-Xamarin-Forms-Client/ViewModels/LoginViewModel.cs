@@ -21,6 +21,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         private string password;
 
         public Command LoginCommand { get; }
+        public Command NewAccountCommand { get; }
 
         public string UserName
         {
@@ -45,6 +46,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         public LoginViewModel()
         {
             LoginCommand = new Command(OnLoginClicked);
+            LoginCommand = new Command(OnNewAccountClicked);
         }
 
         private async void OnLoginClicked(object obj)
@@ -53,6 +55,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             var a = await authenticationService.LoginAsync(UserName, Password);
             // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
             await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
+        }
+
+        private async void OnNewAccountClicked(object obj)
+        {
+            await Shell.Current.GoToAsync($"//{nameof(RegisterPage)}");
         }
     }
 }

@@ -11,6 +11,8 @@
             <Entry Placeholder="User name" Text="{Binding UserName}"/>
             <Entry IsPassword="True" Placeholder="Password" Text="{Binding Password}"/>
             <Button VerticalOptions="Center" Text="Login" Command="{Binding LoginCommand}"/>
+            <Label VerticalOptions="Center" Text="or" />
+            <Button VerticalOptions="Center" Text="Create new account" Command="{Binding NewAccountCommand}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
