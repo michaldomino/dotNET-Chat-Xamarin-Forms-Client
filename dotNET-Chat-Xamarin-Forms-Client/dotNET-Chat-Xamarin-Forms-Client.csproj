@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <RootNamespace>dotNET_Chat_Xamarin_Forms_Client</RootNamespace>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
