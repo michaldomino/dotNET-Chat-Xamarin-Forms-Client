@@ -12,6 +12,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 {
@@ -19,6 +20,9 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
     {
         private string userName;
         private string password;
+        private readonly IDialogService dialogService;
+        private readonly IAuthenticationService authenticationService;
+        private readonly IPropertiesService propertiesService;
 
         public Command LoginCommand { get; }
         public Command NewAccountCommand { get; }
@@ -46,15 +50,30 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         public LoginViewModel()
         {
             LoginCommand = new Command(OnLoginClicked);
-            LoginCommand = new Command(OnNewAccountClicked);
+            NewAccountCommand = new Command(OnNewAccountClicked);
+            dialogService = DependencyService.Get<IDialogService>();
+            authenticationService = DependencyService.Get<IAuthenticationService>();
+            propertiesService = DependencyService.Get<IPropertiesService>();
         }
 
         private async void OnLoginClicked(object obj)
         {
-            IAuthenticationService authenticationService = new AuthenticationService();
-            var a = await authenticationService.LoginAsync(UserName, Password);
-            // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
-            await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
+            var responseModel = await authenticationService.LoginAsync(UserName, Password);
+            if (!responseModel.Success)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("Errors: \n");
+                responseModel.Errors.ForEach(it => stringBuilder.Append(it).Append("\n"));
+                await dialogService.ShowAlert(stringBuilder.ToString());
+                return;
+            }
+            else
+            {
+                await propertiesService.SetJwtTokenAsync(responseModel.Token);
+                await propertiesService.SetUserNameAsync(UserName);
+                // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
+                await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
+            }
         }
 
         private async void OnNewAccountClicked(object obj)

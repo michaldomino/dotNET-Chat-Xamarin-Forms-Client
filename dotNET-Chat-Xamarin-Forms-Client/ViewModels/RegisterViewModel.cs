@@ -17,6 +17,8 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         private string password;
         private string confirmPassword;
         private readonly IDialogService dialogService;
+        private readonly IAuthenticationService authenticationService;
+        private readonly IPropertiesService propertiesService;
 
         public Command RegisterCommand { get; }
 
@@ -63,6 +65,8 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         public RegisterViewModel()
         {
             dialogService = DependencyService.Get<IDialogService>();
+            authenticationService = DependencyService.Get<IAuthenticationService>();
+            propertiesService = DependencyService.Get<IPropertiesService>();
             RegisterCommand = new Command(OnRegisterClicked);
         }
 
@@ -73,7 +77,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                 await dialogService.ShowAlert("Passwords do not match");
                 return;
             }
-            IAuthenticationService authenticationService = new AuthenticationService();
             AuthenticationResponseModel responseModel = await authenticationService.Register(UserName, Email, Password);
             if (!responseModel.Success)
             {
@@ -81,11 +84,12 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                 stringBuilder.Append("Errors: \n");
                 responseModel.Errors.ForEach(it => stringBuilder.Append(it).Append("\n"));
                 await dialogService.ShowAlert(stringBuilder.ToString());
+                return;
             }
-            else
-            {
-                await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
-            }
+
+            await propertiesService.SetJwtTokenAsync(responseModel.Token);
+            await propertiesService.SetUserNameAsync(UserName);
+            await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
         }
     }
 }
