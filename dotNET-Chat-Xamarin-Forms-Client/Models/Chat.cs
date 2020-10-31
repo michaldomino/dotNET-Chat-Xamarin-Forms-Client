@@ -4,7 +4,7 @@ using System.Text;
 
 namespace dotNET_Chat_Xamarin_Forms_Client.Models
 {
-    class Chat
+    public class Chat
     {
         public Guid Id { get; set; }
 
