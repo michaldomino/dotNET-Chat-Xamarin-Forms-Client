@@ -13,5 +13,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ValueModels
             public const string Login = AUTHENTICATION + "/login";
             public const string Register = AUTHENTICATION + "/register";
         }
+
+        public static class ApplicationUsers
+        {
+            private const string APPLICTAION_USERS = API + "/applicationusers";
+            public const string Chats = APPLICTAION_USERS + "/chats";
+        }
     }
 }
