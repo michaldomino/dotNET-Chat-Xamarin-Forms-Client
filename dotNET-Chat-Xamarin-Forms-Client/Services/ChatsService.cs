@@ -50,39 +50,22 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
 
         public async Task<List<Chat>> GetChatsAsync()
         {
-            HttpClient httpClient = GetHttpClient();
-            var request = new HttpRequestMessage
-            {
-                RequestUri = new Uri(ApiRoutesModel.ApplicationUsers.Chats),
-                Method = HttpMethod.Get,
-            };
-            var response = await httpClient.SendAsync(request);
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                throw new UnauthorizedAccessException("Not authorized");
-            }
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new HttpRequestException("Wrong request");
-            }
-            var responseString = await response.Content.ReadAsStringAsync();
-            List<Chat> responseModel = JsonConvert.DeserializeObject<List<Chat>>(responseString);
-            if (responseModel != null)
-            {
-                return responseModel;
-            }
-            throw new Exception("Something went wrong");
+            return await GetRequest<List<Chat>>(ApiRoutesModel.ApplicationUsers.Chats);
         }
 
         public async Task<List<Message>> GetMessagesAsync(Guid chatId)
         {
-            HttpClient httpClient = GetHttpClient();
-            string route = ApiRoutesModel.Chats.GetMessages(chatId);
+            return await GetRequest<List<Message>>(ApiRoutesModel.Chats.GetMessages(chatId));
+        }
+
+        private async Task<T> GetRequest<T>(string route)
+        {
             var request = new HttpRequestMessage
             {
                 RequestUri = new Uri(route),
                 Method = HttpMethod.Get,
             };
+            HttpClient httpClient = GetHttpClient();
             var response = await httpClient.SendAsync(request);
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
@@ -93,7 +76,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
                 throw new HttpRequestException("Wrong request");
             }
             var responseString = await response.Content.ReadAsStringAsync();
-            List<Message> responseModel = JsonConvert.DeserializeObject<List<Message>>(responseString);
+            var responseModel = JsonConvert.DeserializeObject<T>(responseString);
             if (responseModel != null)
             {
                 return responseModel;
