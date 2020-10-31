@@ -21,10 +21,18 @@
                             LineBreakMode="NoWrap" 
                             Style="{DynamicResource ListItemTextStyle}" 
                             FontSize="16" />
-                        <Label Text="{Binding AuthorUserName}" 
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding AuthorUserName}" 
                             LineBreakMode="NoWrap"
                             Style="{DynamicResource ListItemDetailTextStyle}"
-                            FontSize="13" />
+                            FontSize="13"
+                            HorizontalOptions="Start" />
+                            <Label Text="{Binding CreationTime}" 
+                            LineBreakMode="NoWrap"
+                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            FontSize="13"
+                            HorizontalOptions="EndAndExpand" />
+                        </StackLayout>
                     </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

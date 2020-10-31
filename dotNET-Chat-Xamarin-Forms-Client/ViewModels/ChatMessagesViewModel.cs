@@ -3,6 +3,7 @@ using dotNET_Chat_Xamarin_Forms_Client.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -50,7 +51,8 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             {
                 Messages.Clear();
                 var messages = await chatService.GetMessagesAsync(chatId);
-                foreach (var message in messages)
+                var orderedMessages = messages.OrderBy(it => it.CreationTime);
+                foreach (var message in orderedMessages)
                 {
                     Messages.Add(message);
                 }
