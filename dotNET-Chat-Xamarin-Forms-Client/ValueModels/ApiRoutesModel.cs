@@ -19,5 +19,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ValueModels
             private const string APPLICTAION_USERS = API + "/applicationusers";
             public const string Chats = APPLICTAION_USERS + "/chats";
         }
+
+        public static class Chats
+        {
+            private const string CHATS = API + "/chats";
+            public const string Value = CHATS;
+        }
     }
 }

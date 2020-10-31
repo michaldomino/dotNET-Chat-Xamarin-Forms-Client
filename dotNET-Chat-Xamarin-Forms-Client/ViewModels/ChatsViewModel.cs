@@ -1,5 +1,6 @@
 ﻿using dotNET_Chat_Xamarin_Forms_Client.Models;
 using dotNET_Chat_Xamarin_Forms_Client.Services;
+using dotNET_Chat_Xamarin_Forms_Client.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +14,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
     {
         private Chat selectedChat;
         private readonly IChatsService chatService;
+        private readonly IDialogService dialogService;
 
         public ObservableCollection<Chat> Chats { get; }
         public Command LoadChatsCommand { get; }
@@ -31,10 +33,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
         public ChatsViewModel()
         {
-            Title = "Browse Chats";
-            PropertiesService propertiesService = new PropertiesService();
-            var token = propertiesService.GetJwtToken();
             chatService = DependencyService.Get<IChatsService>();
+            dialogService = DependencyService.Get<IDialogService>();
+
+            Title = "Select chat";
+            PropertiesService propertiesService = new PropertiesService();
             Chats = new ObservableCollection<Chat>();
             LoadChatsCommand = new Command(async () => await ExecuteLoadChatsCommand());
 
@@ -46,13 +49,23 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         async Task ExecuteLoadChatsCommand()
         {
             IsBusy = true;
-            Chats.Clear();
-            var chats = await chatService.GetChatsAsync();
-            foreach (var chat in chats)
+            try
             {
-                Chats.Add(chat);
+                Chats.Clear();
+                var chats = await chatService.GetChatsAsync();
+                foreach (var chat in chats)
+                {
+                    Chats.Add(chat);
+                }
             }
-            IsBusy = false;
+            catch (Exception e)
+            {
+                await dialogService.ShowAlert(e.Message);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         public void OnAppearing()
@@ -62,10 +75,9 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         }
 
 
-
         private async void OnAddChat(object obj)
         {
-            //await Shell.Current.GoToAsync(nameof(NewItemPage));
+            await Shell.Current.GoToAsync(nameof(NewChatPage));
         }
 
         async void OnChatSelected(Chat chat)
