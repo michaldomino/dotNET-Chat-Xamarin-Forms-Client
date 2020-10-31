@@ -29,7 +29,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
-            this.PropertyChanged +=
+            PropertyChanged +=
                 (_, __) => SaveCommand.ChangeCanExecute();
         }
 
@@ -46,6 +46,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             catch (Exception e)
             {
                 await dialogService.ShowAlert(e.Message);
+                return;
             }
 
             // This will pop the current page off the navigation stack
