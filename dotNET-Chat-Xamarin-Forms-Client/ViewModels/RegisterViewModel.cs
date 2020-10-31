@@ -3,6 +3,7 @@ using dotNET_Chat_Xamarin_Forms_Client.Services;
 using dotNET_Chat_Xamarin_Forms_Client.Views;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -72,11 +73,16 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
         private async void OnRegisterClicked(object obj)
         {
+            if (await FieldsNullOrEmptyAsync())
+            {
+                return;
+            }
             if (Password != ConfirmPassword)
             {
                 await dialogService.ShowAlert("Passwords do not match");
                 return;
             }
+
             AuthenticationResponseModel responseModel = await authenticationService.Register(UserName, Email, Password);
             if (!responseModel.Success)
             {
@@ -86,10 +92,20 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                 await dialogService.ShowAlert(stringBuilder.ToString());
                 return;
             }
-
             await propertiesService.SetJwtTokenAsync(responseModel.Token);
             await propertiesService.SetUserNameAsync(UserName);
             await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+        }
+
+        private async Task<bool> FieldsNullOrEmptyAsync()
+        {
+            var fields = new string[] { UserName, Email, Password, ConfirmPassword };
+            if (fields.Any(it => it == null || it == string.Empty))
+            {
+                await dialogService.ShowAlert("Fill all fields.");
+                return true;
+            }
+            return false;
         }
     }
 }

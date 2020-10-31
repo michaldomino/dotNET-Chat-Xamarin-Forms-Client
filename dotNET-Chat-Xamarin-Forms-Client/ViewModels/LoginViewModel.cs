@@ -5,6 +5,7 @@ using dotNET_Chat_Xamarin_Forms_Client.Views;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -39,7 +40,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
         public string Password
         {
-            get => password; 
+            get => password;
             set
             {
                 SetProperty(ref password, value);
@@ -58,6 +59,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
         private async void OnLoginClicked(object obj)
         {
+            if(await FieldsNullOrEmptyAsync())
+            {
+                return;
+            }    
+
             var responseModel = await authenticationService.LoginAsync(UserName, Password);
             if (!responseModel.Success)
             {
@@ -67,18 +73,26 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                 await dialogService.ShowAlert(stringBuilder.ToString());
                 return;
             }
-            else
-            {
-                await propertiesService.SetJwtTokenAsync(responseModel.Token);
-                await propertiesService.SetUserNameAsync(UserName);
-                // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
-                await Shell.Current.GoToAsync($"//{nameof(ItemsPage)}");
-            }
+            await propertiesService.SetJwtTokenAsync(responseModel.Token);
+            await propertiesService.SetUserNameAsync(UserName);
+            // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
+            await Shell.Current.GoToAsync($"//{nameof(ItemsPage)}");
         }
 
         private async void OnNewAccountClicked(object obj)
         {
             await Application.Current.MainPage.Navigation.PushAsync(new RegisterPage());
+        }
+
+        private async Task<bool> FieldsNullOrEmptyAsync()
+        {
+            var fields = new string[] { UserName, Password };
+            if (fields.Any(it => it == null || it == string.Empty))
+            {
+                await dialogService.ShowAlert("Fill all fields.");
+                return true;
+            }
+            return false;
         }
     }
 }
