@@ -94,13 +94,13 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             }
             await propertiesService.SetJwtTokenAsync(responseModel.Token);
             await propertiesService.SetUserNameAsync(UserName);
-            await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+            await Shell.Current.GoToAsync($"//{nameof(ChatsPage)}");
         }
 
         private async Task<bool> FieldsNullOrEmptyAsync()
         {
             var fields = new string[] { UserName, Email, Password, ConfirmPassword };
-            if (fields.Any(it => it == null || it == string.Empty))
+            if (fields.Any(it => string.IsNullOrWhiteSpace(it)))
             {
                 await dialogService.ShowAlert("Fill all fields.");
                 return true;

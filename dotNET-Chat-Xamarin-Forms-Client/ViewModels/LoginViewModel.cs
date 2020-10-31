@@ -59,7 +59,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
         private async void OnLoginClicked(object obj)
         {
-            if(await FieldsNullOrEmptyAsync())
+            if(await FieldsNullOrWhiteSpaceAsync())
             {
                 return;
             }    
@@ -84,10 +84,10 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             await Application.Current.MainPage.Navigation.PushAsync(new RegisterPage());
         }
 
-        private async Task<bool> FieldsNullOrEmptyAsync()
+        private async Task<bool> FieldsNullOrWhiteSpaceAsync()
         {
             var fields = new string[] { UserName, Password };
-            if (fields.Any(it => it == null || it == string.Empty))
+            if (fields.Any(it => string.IsNullOrWhiteSpace(it)))
             {
                 await dialogService.ShowAlert("Fill all fields.");
                 return true;
