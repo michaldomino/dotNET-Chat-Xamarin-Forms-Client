@@ -86,7 +86,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                 return;
 
             // This will push the ItemDetailPage onto the navigation stack
-            //await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={chat.Id}");
+            await Shell.Current.GoToAsync($"{nameof(ChatMessagesPage)}?{nameof(ChatMessagesViewModel.ChatId)}={chat.Id}");
         }
     }
 }

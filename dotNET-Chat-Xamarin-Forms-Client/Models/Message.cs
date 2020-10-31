@@ -13,5 +13,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Models
         public DateTime CreationTime { get; set; }
 
         public Guid AuthorId { get; set; }
+
+        public string AuthorUserName { get; set; }
     }
 }

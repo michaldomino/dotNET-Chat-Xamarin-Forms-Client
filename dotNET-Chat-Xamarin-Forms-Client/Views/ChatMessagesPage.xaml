@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="dotNET_Chat_Xamarin_Forms_Client.Views.ChatMessagesPage"
+             Title="{Binding Title}"
+             xmlns:local="clr-namespace:dotNET_Chat_Xamarin_Forms_Client.ViewModels"  
+             xmlns:model="clr-namespace:dotNET_Chat_Xamarin_Forms_Client.Models">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add users" Command="{Binding AddUsersCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <RefreshView x:DataType="local:ChatMessagesViewModel" Command="{Binding LoadMessagesCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <CollectionView x:Name="ChatsListView"
+                ItemsSource="{Binding Messages}"
+                SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="10" x:DataType="model:Message">
+                        <Label Text="{Binding Text}" 
+                            LineBreakMode="NoWrap" 
+                            Style="{DynamicResource ListItemTextStyle}" 
+                            FontSize="16" />
+                        <Label Text="{Binding AuthorUserName}" 
+                            LineBreakMode="NoWrap"
+                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            FontSize="13" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>
