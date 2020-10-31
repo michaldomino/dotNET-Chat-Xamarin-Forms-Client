@@ -20,5 +20,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Views
             InitializeComponent();
             BindingContext = viewModel = new ChatsViewModel();
         }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            viewModel.OnAppearing();
+        }
     }
 }

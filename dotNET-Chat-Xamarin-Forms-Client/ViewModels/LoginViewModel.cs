@@ -76,7 +76,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             await propertiesService.SetJwtTokenAsync(responseModel.Token);
             await propertiesService.SetUserNameAsync(UserName);
             // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
-            await Shell.Current.GoToAsync($"//{nameof(ItemsPage)}");
+            await Shell.Current.GoToAsync($"//{nameof(ChatsPage)}");
         }
 
         private async void OnNewAccountClicked(object obj)
