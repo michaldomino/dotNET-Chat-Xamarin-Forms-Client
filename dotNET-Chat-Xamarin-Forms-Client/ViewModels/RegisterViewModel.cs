@@ -1,15 +1,9 @@
-﻿using dotNET_Chat_Xamarin_Forms_Client.Models;
-using dotNET_Chat_Xamarin_Forms_Client.Models.Request;
+﻿using dotNET_Chat_Xamarin_Forms_Client.Models.Response;
 using dotNET_Chat_Xamarin_Forms_Client.Services;
 using dotNET_Chat_Xamarin_Forms_Client.Views;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -17,16 +11,17 @@ using Xamarin.Forms.Internals;
 
 namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 {
-    public class LoginViewModel : BaseViewModel
+    class RegisterViewModel : BaseViewModel
     {
         private string userName;
+        private string email;
         private string password;
+        private string confirmPassword;
         private readonly IDialogService dialogService;
         private readonly IAuthenticationService authenticationService;
         private readonly IPropertiesService propertiesService;
 
-        public Command LoginCommand { get; }
-        public Command NewAccountCommand { get; }
+        public Command RegisterCommand { get; }
 
         public string UserName
         {
@@ -34,6 +29,16 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             set
             {
                 SetProperty(ref userName, value);
+                OnPropertyChanged();
+            }
+        }
+
+        public string Email
+        {
+            get => email;
+            set
+            {
+                SetProperty(ref email, value);
                 OnPropertyChanged();
             }
         }
@@ -48,23 +53,37 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             }
         }
 
-        public LoginViewModel()
+        public string ConfirmPassword
         {
-            LoginCommand = new Command(OnLoginClicked);
-            NewAccountCommand = new Command(OnNewAccountClicked);
+            get => confirmPassword;
+            set
+            {
+                SetProperty(ref confirmPassword, value);
+                OnPropertyChanged();
+            }
+        }
+
+        public RegisterViewModel()
+        {
             dialogService = DependencyService.Get<IDialogService>();
             authenticationService = DependencyService.Get<IAuthenticationService>();
             propertiesService = DependencyService.Get<IPropertiesService>();
+            RegisterCommand = new Command(OnRegisterClicked);
         }
 
-        private async void OnLoginClicked(object obj)
+        private async void OnRegisterClicked(object obj)
         {
-            if(await FieldsNullOrEmptyAsync())
+            if (await FieldsNullOrEmptyAsync())
             {
                 return;
-            }    
+            }
+            if (Password != ConfirmPassword)
+            {
+                await dialogService.ShowAlert("Passwords do not match");
+                return;
+            }
 
-            var responseModel = await authenticationService.LoginAsync(UserName, Password);
+            AuthenticationResponseModel responseModel = await authenticationService.Register(UserName, Email, Password);
             if (!responseModel.Success)
             {
                 StringBuilder stringBuilder = new StringBuilder();
@@ -75,18 +94,12 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             }
             await propertiesService.SetJwtTokenAsync(responseModel.Token);
             await propertiesService.SetUserNameAsync(UserName);
-            // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
-            await Shell.Current.GoToAsync($"//{nameof(ItemsPage)}");
-        }
-
-        private async void OnNewAccountClicked(object obj)
-        {
-            await Application.Current.MainPage.Navigation.PushAsync(new RegisterPage());
+            await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
         }
 
         private async Task<bool> FieldsNullOrEmptyAsync()
         {
-            var fields = new string[] { UserName, Password };
+            var fields = new string[] { UserName, Email, Password, ConfirmPassword };
             if (fields.Any(it => it == null || it == string.Empty))
             {
                 await dialogService.ShowAlert("Fill all fields.");
