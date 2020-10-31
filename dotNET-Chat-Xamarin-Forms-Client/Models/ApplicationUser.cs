@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace dotNET_Chat_Xamarin_Forms_Client.Models
+{
+    class ApplicationUser
+    {
+        public Guid Id { get; set; }
+
+        public string UserName { get; set; }
+    }
+}
