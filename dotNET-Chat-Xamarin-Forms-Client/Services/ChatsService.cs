@@ -35,9 +35,9 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
             {
                 throw new UnauthorizedAccessException("Not authorized");
             }    
-            if (response.StatusCode != HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.Created)
             {
-                throw new HttpRequestException("Wrong request");
+                throw new HttpRequestException("Chat not created");
             }
             var responseString = await response.Content.ReadAsStringAsync();
             Chat responseModel = JsonConvert.DeserializeObject<Chat>(responseString);
@@ -61,9 +61,9 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
             {
                 throw new UnauthorizedAccessException("Not authorized");
             }
-            if (response.StatusCode != HttpStatusCode.Created)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
-                throw new HttpRequestException("Chat not created");
+                throw new HttpRequestException("Wrong request");
             }
             var responseString = await response.Content.ReadAsStringAsync();
             List<Chat> responseModel = JsonConvert.DeserializeObject<List<Chat>>(responseString);
