@@ -10,32 +10,50 @@
         <ToolbarItem Text="Add users" Command="{Binding AddUsersCommand}" />
     </ContentPage.ToolbarItems>
 
-    <RefreshView x:DataType="local:ChatMessagesViewModel" Command="{Binding LoadMessagesCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <CollectionView x:Name="ChatsListView"
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        
+        <RefreshView Grid.Row="0" x:DataType="local:ChatMessagesViewModel" Command="{Binding LoadMessagesCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+            <ScrollView>
+            <CollectionView x:Name="ChatsListView"
                 ItemsSource="{Binding Messages}"
                 SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <StackLayout Padding="10" x:DataType="model:Message">
-                        <Label Text="{Binding Text}" 
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="10" x:DataType="model:Message">
+                            <Label Text="{Binding Text}" 
                             LineBreakMode="NoWrap" 
                             Style="{DynamicResource ListItemTextStyle}" 
                             FontSize="16" />
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="{Binding AuthorUserName}" 
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding AuthorUserName}" 
                             LineBreakMode="NoWrap"
                             Style="{DynamicResource ListItemDetailTextStyle}"
                             FontSize="13"
                             HorizontalOptions="Start" />
-                            <Label Text="{Binding CreationTime}" 
+                                <Label Text="{Binding CreationTime}" 
                             LineBreakMode="NoWrap"
                             Style="{DynamicResource ListItemDetailTextStyle}"
                             FontSize="13"
                             HorizontalOptions="EndAndExpand" />
+                            </StackLayout>
                         </StackLayout>
-                    </StackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </RefreshView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            </ScrollView>
+        </RefreshView>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Entry Text="{Binding NewMessageText}" Grid.Column="0"/>
+            <Button Text="Send" Command="{Binding SendMessageCommand}" Grid.Column="1" Margin="5"/>
+        </Grid>
+    </Grid>
 </ContentPage>

@@ -17,10 +17,12 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         private readonly IDialogService dialogService;
         private string text;
         private Guid chatId;
+        private string newMessageText;
 
         public ObservableCollection<Message> Messages { get; }
         public Command LoadMessagesCommand { get; }
         public Command SendMessageCommand { get; }
+        public Command AddUsersCommand { get; }
 
         public string ChatId
         {
@@ -34,6 +36,12 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             set => SetProperty(ref text, value);
         }
 
+        public string NewMessageText
+        {
+            get => newMessageText;
+            set => SetProperty(ref newMessageText, value);
+        }
+
         public ChatMessagesViewModel()
         {
             chatService = DependencyService.Get<IChatsService>();
@@ -42,9 +50,10 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             Messages = new ObservableCollection<Message>();
             LoadMessagesCommand = new Command(async () => await ExecuteLoadMessagesCommand());
             SendMessageCommand = new Command(OnSendMessage);
+            AddUsersCommand = new Command(OnAddUsers);
         }
 
-        async Task ExecuteLoadMessagesCommand()
+        private async Task ExecuteLoadMessagesCommand()
         {
             IsBusy = true;
             try
@@ -73,6 +82,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         }
 
         private async void OnSendMessage(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async void OnAddUsers(object obj)
         {
             throw new NotImplementedException();
         }

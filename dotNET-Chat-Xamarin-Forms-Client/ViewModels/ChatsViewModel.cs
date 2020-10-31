@@ -46,7 +46,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             AddChatCommand = new Command(OnAddChat);
         }
 
-        async Task ExecuteLoadChatsCommand()
+        private async Task ExecuteLoadChatsCommand()
         {
             IsBusy = true;
             try
