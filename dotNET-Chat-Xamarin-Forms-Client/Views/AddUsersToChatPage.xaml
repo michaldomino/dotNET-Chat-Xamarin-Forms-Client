@@ -11,24 +11,26 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
-                <RowDefinition Height="20"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <CollectionView 
-            x:DataType="local:AddUsersToChatViewModel" 
-            x:Name="UsersListView"
-            ItemsSource="{Binding Users}"
-            SelectionMode="Multiple"
-            Grid.Row="0">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout x:DataType="model:SelectableUser">
-                            <CheckBox IsChecked="{Binding IsSelected}" />
-                            <Label Text="{Binding UserName}" />
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <RefreshView Grid.Row="0" x:DataType="local:AddUsersToChatViewModel" Command="{Binding LoadUsersCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+                <ScrollView>
+                    <CollectionView 
+                    x:Name="UsersListView"
+                    ItemsSource="{Binding UsersToSelect}"
+                    SelectionMode="Multiple">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout x:DataType="model:SelectableUser">
+                                    <CheckBox IsChecked="{Binding IsSelected}" />
+                                    <Label Text="{Binding UserName}" />
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+            </RefreshView>
             <Button Grid.Row="1" Text="Add" Command="{Binding AddUsersCommand}"/>
 
         </Grid>

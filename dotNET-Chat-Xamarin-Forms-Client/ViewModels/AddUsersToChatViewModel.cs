@@ -3,7 +3,9 @@ using dotNET_Chat_Xamarin_Forms_Client.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
@@ -11,11 +13,14 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
     [QueryProperty(nameof(ChatId), nameof(ChatId))]
     class AddUsersToChatViewModel : BaseViewModel
     {
-        private readonly IChatsService chatService;
+        private readonly IApplicationUsersService applicationUsersService;
+        private readonly IChatsService chatsService;
         private readonly IDialogService dialogService;
         private Guid chatId;
 
-        public ObservableCollection<SelectableUser> Users { get; }
+        public ObservableCollection<SelectableUser> UsersToSelect { get; }
+        
+        public Command LoadUsersCommand { get; }
         public Command AddUsersCommand { get; }
 
         public string ChatId
@@ -23,7 +28,8 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             get => chatId.ToString();
             set => chatId = Guid.Parse(value);
         }
-        //public Command LoadChatsCommand { get; }
+        
+        
         //public Command AddChatCommand { get; }
         //public Command<Chat> TappedChat { get; }
 
@@ -39,40 +45,48 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
         public AddUsersToChatViewModel()
         {
-            chatService = DependencyService.Get<IChatsService>();
+            applicationUsersService = DependencyService.Get<IApplicationUsersService>();
+            chatsService = DependencyService.Get<IChatsService>();
             dialogService = DependencyService.Get<IDialogService>();
 
             Title = "Add users";
-            Users = new ObservableCollection<SelectableUser>();
+            UsersToSelect = new ObservableCollection<SelectableUser>();
             AddUsersCommand = new Command(OnAddUsers);
-            //LoadChatsCommand = new Command(async () => await ExecuteLoadChatsCommand());
+            LoadUsersCommand = new Command(async () => await ExecuteLoadUsersCommand());
 
             //TappedChat = new Command<Chat>(OnChatSelected);
 
             //AddChatCommand = new Command(OnAddChat);
         }
 
-        //private async Task ExecuteLoadChatsCommand()
-        //{
-        //    IsBusy = true;
-        //    try
-        //    {
-        //        Chats.Clear();
-        //        var chats = await chatService.GetChatsAsync();
-        //        foreach (var chat in chats)
-        //        {
-        //            Chats.Add(chat);
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        await dialogService.ShowAlert(e.Message);
-        //    }
-        //    finally
-        //    {
-        //        IsBusy = false;
-        //    }
-        //}
+        private async Task ExecuteLoadUsersCommand()
+        {
+            IsBusy = true;
+            try
+            {
+                UsersToSelect.Clear();
+                var users = await applicationUsersService.GetApplicationUsersAsync();
+                List<ApplicationUser> chatMembers = await chatsService.GetChatMembers(chatId);
+                var usersToSelect = users.Except(chatMembers, new ApplicationUserComparer()).Select(it => new SelectableUser
+                {
+                    Id = it.Id,
+                    UserName = it.UserName,
+                    IsSelected = false
+                });
+                foreach (var userToSelect in usersToSelect)
+                {
+                    UsersToSelect.Add(userToSelect);
+                }
+            }
+            catch (Exception e)
+            {
+                await dialogService.ShowAlert(e.Message);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
 
         public void OnAppearing()
         {
