@@ -45,7 +45,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services.Base
             throw new Exception("Something went wrong");
         }
 
-        protected async Task<T> PostRequest<T>(string route, object requestModel, string notCreatedMessage)
+        protected async Task<T> PostRequest<T>(string route, object requestModel, string unsuccessfulRequestMessage, HttpStatusCode expectedHttpStatusCode)
         {
             var request = new HttpRequestMessage
             {
@@ -59,9 +59,9 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services.Base
             {
                 throw new UnauthorizedAccessException("Not authorized");
             }
-            if (response.StatusCode != HttpStatusCode.Created)
+            if (response.StatusCode != expectedHttpStatusCode)
             {
-                throw new HttpRequestException(notCreatedMessage);
+                throw new HttpRequestException(unsuccessfulRequestMessage);
             }
             var responseString = await response.Content.ReadAsStringAsync();
             var responseModel = JsonConvert.DeserializeObject<T>(responseString);
