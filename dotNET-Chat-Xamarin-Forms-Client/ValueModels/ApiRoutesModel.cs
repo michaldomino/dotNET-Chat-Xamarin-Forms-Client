@@ -25,6 +25,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ValueModels
             private const string CHATS = API + "/Chats";
             public const string Value = CHATS;
             public static string GetMessages(Guid chatId) => $"{CHATS}/GetMessages/{chatId}";
+            public static string SendMessage(Guid chatId) => $"{CHATS}/SendMessage/{chatId}";
         }
     }
 }

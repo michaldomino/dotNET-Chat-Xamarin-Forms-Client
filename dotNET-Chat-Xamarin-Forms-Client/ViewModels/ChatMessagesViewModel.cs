@@ -1,4 +1,5 @@
 ﻿using dotNET_Chat_Xamarin_Forms_Client.Models;
+using dotNET_Chat_Xamarin_Forms_Client.Models.Request;
 using dotNET_Chat_Xamarin_Forms_Client.Services;
 using System;
 using System.Collections.Generic;
@@ -83,7 +84,12 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
         private async void OnSendMessage(object obj)
         {
-            throw new NotImplementedException();
+            NewMessageRequestModel newMessageRequest = new NewMessageRequestModel
+            {
+                Text = NewMessageText
+            };
+            Message createdMessage = await chatService.SendMessageAsync(chatId, newMessageRequest);
+            Messages.Add(createdMessage);
         }
 
         private async void OnAddUsers(object obj)

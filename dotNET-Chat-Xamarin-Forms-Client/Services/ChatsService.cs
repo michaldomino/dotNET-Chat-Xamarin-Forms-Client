@@ -1,4 +1,5 @@
 ﻿using dotNET_Chat_Xamarin_Forms_Client.Models;
+using dotNET_Chat_Xamarin_Forms_Client.Models.Request;
 using dotNET_Chat_Xamarin_Forms_Client.ValueModels;
 using Newtonsoft.Json;
 using System;
@@ -23,29 +24,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
 
         public async Task<Chat> CreateChatAsync(Chat chat)
         {
-            HttpClient httpClient = GetHttpClient();
-            var request = new HttpRequestMessage
-            {
-                RequestUri = new Uri(ApiRoutesModel.Chats.Value),
-                Method = HttpMethod.Post,
-                Content = new StringContent(JsonConvert.SerializeObject(chat), Encoding.UTF8, "application/json")
-            };
-            var response = await httpClient.SendAsync(request);
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                throw new UnauthorizedAccessException("Not authorized");
-            }    
-            if (response.StatusCode != HttpStatusCode.Created)
-            {
-                throw new HttpRequestException("Chat not created");
-            }
-            var responseString = await response.Content.ReadAsStringAsync();
-            Chat responseModel = JsonConvert.DeserializeObject<Chat>(responseString);
-            if (responseModel != null)
-            {
-                return responseModel;
-            }
-            throw new Exception("Something went wrong");
+            return await PostRequest<Chat>(ApiRoutesModel.Chats.Value, chat, "Chat not created");
         }
 
         public async Task<List<Chat>> GetChatsAsync()
@@ -56,6 +35,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
         public async Task<List<Message>> GetMessagesAsync(Guid chatId)
         {
             return await GetRequest<List<Message>>(ApiRoutesModel.Chats.GetMessages(chatId));
+        }
+
+        public async Task<Message> SendMessageAsync(Guid chatId, NewMessageRequestModel requestModel)
+        {
+            return await PostRequest<Message>(ApiRoutesModel.Chats.SendMessage(chatId), requestModel, "Message not sent");
         }
 
         private async Task<T> GetRequest<T>(string route)
@@ -74,6 +58,33 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 throw new HttpRequestException("Wrong request");
+            }
+            var responseString = await response.Content.ReadAsStringAsync();
+            var responseModel = JsonConvert.DeserializeObject<T>(responseString);
+            if (responseModel != null)
+            {
+                return responseModel;
+            }
+            throw new Exception("Something went wrong");
+        }
+
+        private async Task<T> PostRequest<T>(string route, object requestModel, string notCreatedMessage)
+        {
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(route),
+                Method = HttpMethod.Post,
+                Content = new StringContent(JsonConvert.SerializeObject(requestModel), Encoding.UTF8, "application/json")
+            };
+            HttpClient httpClient = GetHttpClient();
+            var response = await httpClient.SendAsync(request);
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException("Not authorized");
+            }
+            if (response.StatusCode != HttpStatusCode.Created)
+            {
+                throw new HttpRequestException(notCreatedMessage);
             }
             var responseString = await response.Content.ReadAsStringAsync();
             var responseModel = JsonConvert.DeserializeObject<T>(responseString);
