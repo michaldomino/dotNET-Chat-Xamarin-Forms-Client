@@ -55,6 +55,8 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             propertiesService = DependencyService.Get<IPropertiesService>();
             PropertyChanged +=
                 (_, __) => LoginCommand.ChangeCanExecute();
+
+            authenticationService.LogInIfValidTokenAsync();
         }
 
         private bool ValidateFields(object arg)

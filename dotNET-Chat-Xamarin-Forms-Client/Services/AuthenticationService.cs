@@ -5,6 +5,7 @@ using dotNET_Chat_Xamarin_Forms_Client.Views;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -17,11 +18,13 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
     {
         private readonly IPropertiesService propertiesService;
         private readonly IDialogService dialogService;
+        private readonly IApplicationUsersService applicationUsersService;
 
         public AuthenticationService()
         {
             propertiesService = DependencyService.Get<IPropertiesService>();
             dialogService = DependencyService.Get<IDialogService>();
+            applicationUsersService = DependencyService.Get<IApplicationUsersService>();
         }
 
         public async Task<AuthenticationResponseModel> LoginAsync(string userName, string password)
@@ -76,6 +79,35 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
                 Success = false,
                 Errors = new[] { "Request failed" }
             };
+        }
+
+        public async Task LogInIfValidTokenAsync()
+        {
+            bool isTokenValid = await IsTokenValid();
+            if (isTokenValid)
+            {
+                await Shell.Current.GoToAsync($"//{nameof(ChatsPage)}");
+            }
+        }
+
+        private async Task<bool> IsTokenValid()
+        {
+            string token = propertiesService.GetJwtToken();
+            string userName = propertiesService.GetUserName();
+            string[] userProperties = { token, userName };
+            if (userProperties.Any(it => string.IsNullOrEmpty(it)))
+            {
+                return false;
+            }
+            try
+            {
+                await applicationUsersService.GetApplicationUsersAsync();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
