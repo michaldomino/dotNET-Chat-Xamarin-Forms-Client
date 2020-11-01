@@ -12,5 +12,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
         Task<Chat> CreateChatAsync(Chat chat);
         Task<List<Message>> GetMessagesAsync(Guid chatId);
         Task<Message> SendMessageAsync(Guid chatId, NewMessageRequestModel requestModel);
+        Task<List<ApplicationUser>> GetChatMembers(Guid chatId);
     }
 }

@@ -21,6 +21,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
             return await PostRequest<Chat>(ApiRoutesModel.Chats.Value, chat, "Chat not created");
         }
 
+        public async Task<List<ApplicationUser>> GetChatMembers(Guid chatId)
+        {
+            return await GetRequest<List<ApplicationUser>>(ApiRoutesModel.Chats.GetMembers(chatId));
+        }
+
         public async Task<List<Message>> GetMessagesAsync(Guid chatId)
         {
             return await GetRequest<List<Message>>(ApiRoutesModel.Chats.GetMessages(chatId));
