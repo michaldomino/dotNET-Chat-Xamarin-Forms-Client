@@ -1,4 +1,6 @@
 ﻿using dotNET_Chat_Xamarin_Forms_Client.Models;
+using dotNET_Chat_Xamarin_Forms_Client.Models.Request;
+using dotNET_Chat_Xamarin_Forms_Client.Models.Response;
 using dotNET_Chat_Xamarin_Forms_Client.Services;
 using System;
 using System.Collections.Generic;
@@ -22,26 +24,14 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         
         public Command LoadUsersCommand { get; }
         public Command AddUsersCommand { get; }
+        public Command CancelCommand { get; }
+        public Command CheckBoxChangedCommand { get; }
 
         public string ChatId
         {
             get => chatId.ToString();
             set => chatId = Guid.Parse(value);
         }
-        
-        
-        //public Command AddChatCommand { get; }
-        //public Command<Chat> TappedChat { get; }
-
-        //public Chat SelectedUsers
-        //{
-        //    get => selectedChat;
-        //    set
-        //    {
-        //        SetProperty(ref selectedChat, value);
-        //        OnChatSelected(value);
-        //    }
-        //}
 
         public AddUsersToChatViewModel()
         {
@@ -51,12 +41,12 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
             Title = "Add users";
             UsersToSelect = new ObservableCollection<SelectableUser>();
-            AddUsersCommand = new Command(OnAddUsers);
+            AddUsersCommand = new Command(OnAddUsers, ValidateSave);
             LoadUsersCommand = new Command(async () => await ExecuteLoadUsersCommand());
-
-            //TappedChat = new Command<Chat>(OnChatSelected);
-
-            //AddChatCommand = new Command(OnAddChat);
+            CancelCommand = new Command(OnCancel);
+            CheckBoxChangedCommand = new Command(() => OnPropertyChanged());
+            PropertyChanged +=
+                (_, __) => AddUsersCommand.ChangeCanExecute();
         }
 
         private async Task ExecuteLoadUsersCommand()
@@ -91,26 +81,39 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         public void OnAppearing()
         {
             IsBusy = true;
-            //SelectedUsers = null;
+        }
+
+        public void OnCheckBoxChanged()
+        {
+            OnPropertyChanged();
         }
 
         private async void OnAddUsers()
         {
-            throw new NotImplementedException();
+            var selectedUsersIds = UsersToSelect.Where(it => it.IsSelected).Select(it => it.Id);
+            AddUsersToChatRequestModel requestModel = new AddUsersToChatRequestModel
+            {
+                UsersIds = selectedUsersIds.ToList()
+            };
+            AddUsersToChatResponseModel responseModel = await chatsService.AddUsersToChatAsync(chatId, requestModel);
+            await GoToPreviousPageAsync();
         }
 
-        //private async void OnAddChat(object obj)
-        //{
-        //    await Shell.Current.GoToAsync(nameof(NewChatPage));
-        //}
+        //private async void Check
 
-        //async void OnChatSelected(Chat chat)
-        //{
-        //    if (chat == null)
-        //        return;
+        private async void OnCancel()
+        {
+            await GoToPreviousPageAsync();
+        }
 
-        //    // This will push the ItemDetailPage onto the navigation stack
-        //    await Shell.Current.GoToAsync($"{nameof(ChatMessagesPage)}?{nameof(ChatMessagesViewModel.ChatId)}={chat.Id}");
-        //}
+        private bool ValidateSave()
+        {
+            return UsersToSelect.Any(it => it.IsSelected);
+        }
+
+        private async Task GoToPreviousPageAsync()
+        {
+            await Shell.Current.Navigation.PopAsync();
+        }
     }
 }

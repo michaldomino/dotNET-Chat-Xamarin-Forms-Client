@@ -3,6 +3,7 @@ using dotNET_Chat_Xamarin_Forms_Client.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
@@ -48,9 +49,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                 await dialogService.ShowAlert(e.Message);
                 return;
             }
-
-            // This will pop the current page off the navigation stack
-            await Shell.Current.GoToAsync("..");
+            await GoToPreviousPageAsync();
         }
 
         private bool ValidateSave()
@@ -60,7 +59,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
         private async void OnCancel()
         {
-            // This will pop the current page off the navigation stack
+            await GoToPreviousPageAsync();
+        }
+
+        private async Task GoToPreviousPageAsync()
+        {
             await Shell.Current.GoToAsync("..");
         }
     }

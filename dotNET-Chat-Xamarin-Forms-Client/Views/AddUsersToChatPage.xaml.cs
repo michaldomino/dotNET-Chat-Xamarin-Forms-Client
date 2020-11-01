@@ -26,5 +26,10 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Views
             viewModel.OnAppearing();
             base.OnAppearing();
         }
+
+        private void CheckBox_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            viewModel.OnCheckBoxChanged();
+        }
     }
 }
