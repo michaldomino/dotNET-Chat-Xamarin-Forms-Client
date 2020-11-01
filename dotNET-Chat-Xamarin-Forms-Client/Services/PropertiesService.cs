@@ -45,5 +45,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
         {
             await SetPropertyValueAsync(USER_NAME_KEY, value);
         }
+
+        public async Task ResetUserAsync()
+        {
+            await SetJwtTokenAsync(null);
+            await SetUserNameAsync(null);
+        }
     }
 }
