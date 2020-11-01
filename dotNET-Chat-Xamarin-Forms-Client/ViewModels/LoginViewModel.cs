@@ -34,7 +34,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             set
             {
                 SetProperty(ref userName, value);
-                OnPropertyChanged();
             }
         }
 
@@ -44,26 +43,27 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             set
             {
                 SetProperty(ref password, value);
-                OnPropertyChanged();
             }
         }
 
         public LoginViewModel()
         {
-            LoginCommand = new Command(OnLoginClicked);
+            LoginCommand = new Command(OnLoginClicked, ValidateFields);
             NewAccountCommand = new Command(OnNewAccountClicked);
             dialogService = DependencyService.Get<IDialogService>();
             authenticationService = DependencyService.Get<IAuthenticationService>();
             propertiesService = DependencyService.Get<IPropertiesService>();
+            PropertyChanged +=
+                (_, __) => LoginCommand.ChangeCanExecute();
+        }
+
+        private bool ValidateFields(object arg)
+        {
+            return !FieldsNullOrWhiteSpace();
         }
 
         private async void OnLoginClicked(object obj)
         {
-            if(await FieldsNullOrEmptyAsync())
-            {
-                return;
-            }    
-
             var responseModel = await authenticationService.LoginAsync(UserName, Password);
             if (!responseModel.Success)
             {
@@ -76,7 +76,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             await propertiesService.SetJwtTokenAsync(responseModel.Token);
             await propertiesService.SetUserNameAsync(UserName);
             // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
-            await Shell.Current.GoToAsync($"//{nameof(ItemsPage)}");
+            await Shell.Current.GoToAsync($"//{nameof(ChatsPage)}");
         }
 
         private async void OnNewAccountClicked(object obj)
@@ -84,15 +84,10 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             await Application.Current.MainPage.Navigation.PushAsync(new RegisterPage());
         }
 
-        private async Task<bool> FieldsNullOrEmptyAsync()
+        private bool FieldsNullOrWhiteSpace()
         {
             var fields = new string[] { UserName, Password };
-            if (fields.Any(it => it == null || it == string.Empty))
-            {
-                await dialogService.ShowAlert("Fill all fields.");
-                return true;
-            }
-            return false;
+            return fields.Any(it => string.IsNullOrWhiteSpace(it));
         }
     }
 }

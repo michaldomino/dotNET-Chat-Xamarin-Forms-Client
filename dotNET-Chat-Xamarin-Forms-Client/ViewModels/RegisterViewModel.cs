@@ -49,7 +49,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             set
             {
                 SetProperty(ref password, value);
-                OnPropertyChanged();
             }
         }
 
@@ -59,7 +58,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             set
             {
                 SetProperty(ref confirmPassword, value);
-                OnPropertyChanged();
             }
         }
 
@@ -68,15 +66,18 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             dialogService = DependencyService.Get<IDialogService>();
             authenticationService = DependencyService.Get<IAuthenticationService>();
             propertiesService = DependencyService.Get<IPropertiesService>();
-            RegisterCommand = new Command(OnRegisterClicked);
+            RegisterCommand = new Command(OnRegisterClicked, ValidateFields);
+            PropertyChanged +=
+                (_, __) => RegisterCommand.ChangeCanExecute();
+        }
+
+        private bool ValidateFields(object arg)
+        {
+            return !FieldsNullOrWhiteSpace();
         }
 
         private async void OnRegisterClicked(object obj)
         {
-            if (await FieldsNullOrEmptyAsync())
-            {
-                return;
-            }
             if (Password != ConfirmPassword)
             {
                 await dialogService.ShowAlert("Passwords do not match");
@@ -94,18 +95,13 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             }
             await propertiesService.SetJwtTokenAsync(responseModel.Token);
             await propertiesService.SetUserNameAsync(UserName);
-            await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+            await Shell.Current.GoToAsync($"//{nameof(ChatsPage)}");
         }
 
-        private async Task<bool> FieldsNullOrEmptyAsync()
+        private bool FieldsNullOrWhiteSpace()
         {
             var fields = new string[] { UserName, Email, Password, ConfirmPassword };
-            if (fields.Any(it => it == null || it == string.Empty))
-            {
-                await dialogService.ShowAlert("Fill all fields.");
-                return true;
-            }
-            return false;
+            return fields.Any(it => string.IsNullOrWhiteSpace(it));
         }
     }
 }

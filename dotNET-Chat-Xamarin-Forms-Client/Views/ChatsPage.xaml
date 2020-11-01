@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="dotNET_Chat_Xamarin_Forms_Client.Views.ChatsPage"
+             Title="{Binding Title}"
+             xmlns:local="clr-namespace:dotNET_Chat_Xamarin_Forms_Client.ViewModels"  
+             xmlns:model="clr-namespace:dotNET_Chat_Xamarin_Forms_Client.Models"  
+             x:Name="BrowseChatsPage">
+    
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddChatCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <RefreshView x:DataType="local:ChatsViewModel" Command="{Binding LoadChatsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <CollectionView x:Name="ChatsListView"
+                ItemsSource="{Binding Chats}"
+                SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="10" x:DataType="model:Chat">
+                        <Label Text="{Binding Name}" 
+                            LineBreakMode="NoWrap" 
+                            Style="{DynamicResource ListItemTextStyle}" 
+                            FontSize="16" />
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:ChatsViewModel}}, Path=TappedChat}"		
+                                CommandParameter="{Binding .}">
+                            </TapGestureRecognizer>
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>
