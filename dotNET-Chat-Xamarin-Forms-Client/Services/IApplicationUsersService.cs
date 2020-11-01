@@ -9,5 +9,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
     interface IApplicationUsersService
     {
         Task<List<Chat>> GetChatsAsync();
+        Task<List<ApplicationUser>> GetApplicationUsersAsync();
     }
 }
