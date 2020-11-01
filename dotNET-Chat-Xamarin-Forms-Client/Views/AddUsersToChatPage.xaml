@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="dotNET_Chat_Xamarin_Forms_Client.Views.AddUsersToChatPage"
+             Title="{Binding Title}"
+             xmlns:local="clr-namespace:dotNET_Chat_Xamarin_Forms_Client.ViewModels"  
+             xmlns:model="clr-namespace:dotNET_Chat_Xamarin_Forms_Client.Models"  
+             x:Name="AddUsersToChat">
+    <ContentPage.Content>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+
+            <CollectionView 
+            x:DataType="local:AddUsersToChatViewModel" 
+            x:Name="UsersListView"
+            ItemsSource="{Binding Users}"
+            SelectionMode="Multiple"
+            Grid.Row="0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout x:DataType="model:SelectableUser">
+                            <CheckBox IsChecked="{Binding IsSelected}" />
+                            <Label Text="{Binding UserName}" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Button Grid.Row="1" Text="Add" Command="{Binding AddUsersCommand}"/>
+
+        </Grid>
+
+        <!--<StackLayout>
+            <Label Text="Welcome to Xamarin.Forms!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+        </StackLayout>-->
+    </ContentPage.Content>
+</ContentPage>

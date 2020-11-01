@@ -1,6 +1,7 @@
 ﻿using dotNET_Chat_Xamarin_Forms_Client.Models;
 using dotNET_Chat_Xamarin_Forms_Client.Models.Request;
 using dotNET_Chat_Xamarin_Forms_Client.Services;
+using dotNET_Chat_Xamarin_Forms_Client.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -94,7 +95,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
         private async void OnAddUsers(object obj)
         {
-            throw new NotImplementedException();
+            await Shell.Current.GoToAsync($"{nameof(AddUsersToChatPage)}?{nameof(AddUsersToChatViewModel.ChatId)}={chatId}");
         }
     }
 }
