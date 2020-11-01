@@ -13,7 +13,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
     class ChatsViewModel : BaseViewModel
     {
         private Chat selectedChat;
-        private readonly IChatsService chatService;
+        private readonly IApplicationUsersService applicationUsersService;
         private readonly IDialogService dialogService;
 
         public ObservableCollection<Chat> Chats { get; }
@@ -33,7 +33,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 
         public ChatsViewModel()
         {
-            chatService = DependencyService.Get<IChatsService>();
+            applicationUsersService = DependencyService.Get<IApplicationUsersService>();
             dialogService = DependencyService.Get<IDialogService>();
 
             Title = "Select chat";
@@ -52,7 +52,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             try
             {
                 Chats.Clear();
-                var chats = await chatService.GetChatsAsync();
+                var chats = await applicationUsersService.GetChatsAsync();
                 foreach (var chat in chats)
                 {
                     Chats.Add(chat);

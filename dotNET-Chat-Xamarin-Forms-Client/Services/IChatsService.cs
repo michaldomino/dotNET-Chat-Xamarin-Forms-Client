@@ -9,7 +9,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
 {
     interface IChatsService
     {
-        Task<List<Chat>> GetChatsAsync();
         Task<Chat> CreateChatAsync(Chat chat);
         Task<List<Message>> GetMessagesAsync(Guid chatId);
         Task<Message> SendMessageAsync(Guid chatId, NewMessageRequestModel requestModel);

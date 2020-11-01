@@ -21,6 +21,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client
             DependencyService.Register<IAuthenticationService, AuthenticationService>();
             DependencyService.Register<IPropertiesService, PropertiesService>();
             DependencyService.Register<IChatsService, ChatsService>();
+            DependencyService.Register<IApplicationUsersService, ApplicationUsersService>();
             MainPage = new AppShell();
         }
 
