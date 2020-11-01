@@ -16,7 +16,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client
             Xamarin.Forms.Application.Current.On<Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Resize);
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
             DependencyService.Register<IDialogService, DialogService>();
             DependencyService.Register<IAuthenticationService, AuthenticationService>();
             DependencyService.Register<IPropertiesService, PropertiesService>();

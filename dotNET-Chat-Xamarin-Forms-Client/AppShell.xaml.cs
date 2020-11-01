@@ -11,8 +11,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute(nameof(ItemDetailPage), typeof(ItemDetailPage));
-            Routing.RegisterRoute(nameof(NewItemPage), typeof(NewItemPage));
             Routing.RegisterRoute(nameof(NewChatPage), typeof(NewChatPage));
             Routing.RegisterRoute(nameof(ChatMessagesPage), typeof(ChatMessagesPage));
             Routing.RegisterRoute(nameof(AddUsersToChatPage), typeof(AddUsersToChatPage));
