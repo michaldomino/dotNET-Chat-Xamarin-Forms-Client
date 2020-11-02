@@ -106,6 +106,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                     Text = NewMessageText
                 };
                 Message createdMessage = await chatService.SendMessageAsync(chatId, newMessageRequest);
+                createdMessage.CreationTime = TimeZoneInfo.ConvertTimeFromUtc(createdMessage.CreationTime, TimeZoneInfo.Local);
                 Messages.Add(createdMessage);
                 NewMessageText = "";
             }
