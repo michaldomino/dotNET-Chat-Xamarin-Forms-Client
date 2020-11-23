@@ -1,7 +1,7 @@
 # dotNET-Chat-Xamarin-Forms-Client
 Simple chat implemented using .NET only.
 
-Link to ASP.NET Core server app:
+Link to ASP.NET Core server app:  
 https://github.com/michaldomino/dotNET-Chat-Server/tree/project_description_and_licence
 
 ### Screenshots
