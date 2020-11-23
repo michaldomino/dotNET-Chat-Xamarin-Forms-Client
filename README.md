@@ -2,7 +2,7 @@
 Simple chat implemented using .NET only.
 
 Link to ASP.NET Core server app:  
-https://github.com/michaldomino/dotNET-Chat-Server/tree/project_description_and_licence
+https://github.com/michaldomino/dotNET-Chat-Server
 
 ### Screenshots
 #### Login screen
