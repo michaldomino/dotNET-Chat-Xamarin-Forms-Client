@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-using Xamarin.Forms;
-
-using dotNET_Chat_Xamarin_Forms_Client.Models;
-using dotNET_Chat_Xamarin_Forms_Client.Services;
-
 namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged

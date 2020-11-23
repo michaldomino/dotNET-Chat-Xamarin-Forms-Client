@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using dotNET_Chat_Xamarin_Forms_Client.Services;
-using dotNET_Chat_Xamarin_Forms_Client.ViewModels;
 using dotNET_Chat_Xamarin_Forms_Client.Views;
 using Xamarin.Forms;
 

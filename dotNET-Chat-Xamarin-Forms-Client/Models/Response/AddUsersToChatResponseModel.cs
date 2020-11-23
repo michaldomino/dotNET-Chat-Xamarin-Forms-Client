@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace dotNET_Chat_Xamarin_Forms_Client.Models.Response
 {
