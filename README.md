@@ -8,17 +8,17 @@ https://github.com/michaldomino/dotNET-Chat-Server/tree/project_description_and_
 
 <p align="center">
 Login screen<br>
-<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/login.png?raw=true" />  
+<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/login.png?raw=true" /><br>
 Register screen<br> 
-<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/register.png?raw=true" >  
+<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/register.png?raw=true" /><br>
 Chats screen<br>
-<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/chats.png?raw=true" >  
+<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/chats.png?raw=true" /><br>
 Side menu<br>
-<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/side_menu.png?raw=true" >  
+<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/side_menu.png?raw=true" /><br> 
 New chat screen<br>
-<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/new_chat.png?raw=true" >  
+<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/new_chat.png?raw=true" /><br>
 Messages screen<br>
-<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/messages.png?raw=true" >  
+<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/messages.png?raw=true" /><br>
 Add users to chat screen<br>
-<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/add_users.png?raw=true" >  
+<img src="https://github.com/michaldomino/dotNET-Chat-Xamarin-Forms-Client/blob/media/docs/images/add_users.png?raw=true" /><br>
 </p>
