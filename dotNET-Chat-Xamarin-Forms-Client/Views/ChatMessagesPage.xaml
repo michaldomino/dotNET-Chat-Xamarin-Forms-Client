@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="dotNET_Chat_Xamarin_Forms_Client.Views.ChatMessagesPage"
+             Title="{Binding Title}"
+             xmlns:local="clr-namespace:dotNET_Chat_Xamarin_Forms_Client.ViewModels"  
+             xmlns:model="clr-namespace:dotNET_Chat_Xamarin_Forms_Client.Models">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add users" Command="{Binding AddUsersCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        
+        <RefreshView Grid.Row="0" x:DataType="local:ChatMessagesViewModel" Command="{Binding LoadMessagesCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+            <ScrollView>
+            <CollectionView x:Name="ChatsListView"
+                ItemsSource="{Binding Messages}"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="10" x:DataType="model:Message">
+                            <Label Text="{Binding Text}" 
+                            LineBreakMode="NoWrap" 
+                            Style="{DynamicResource ListItemTextStyle}" 
+                            FontSize="16" />
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding AuthorUserName}" 
+                            LineBreakMode="NoWrap"
+                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            FontSize="13"
+                            HorizontalOptions="Start" />
+                                <Label Text="{Binding CreationTime}" 
+                            LineBreakMode="NoWrap"
+                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            FontSize="13"
+                            HorizontalOptions="EndAndExpand" />
+                            </StackLayout>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            </ScrollView>
+        </RefreshView>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Entry Text="{Binding NewMessageText}" Grid.Column="0"/>
+            <Button Text="Send" Command="{Binding SendMessageCommand}" Grid.Column="1" Margin="5"/>
+        </Grid>
+    </Grid>
+</ContentPage>
