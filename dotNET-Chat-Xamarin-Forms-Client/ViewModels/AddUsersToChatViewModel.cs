@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -18,6 +17,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         private readonly IApplicationUsersService applicationUsersService;
         private readonly IChatsService chatsService;
         private readonly IDialogService dialogService;
+        private readonly IAuthenticationService authenticationService;
         private Guid chatId;
 
         public ObservableCollection<SelectableUser> UsersToSelect { get; }
@@ -38,6 +38,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             applicationUsersService = DependencyService.Get<IApplicationUsersService>();
             chatsService = DependencyService.Get<IChatsService>();
             dialogService = DependencyService.Get<IDialogService>();
+            authenticationService = DependencyService.Get<IAuthenticationService>();
 
             Title = "Add users";
             UsersToSelect = new ObservableCollection<SelectableUser>();
@@ -67,6 +68,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                 {
                     UsersToSelect.Add(userToSelect);
                 }
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                await dialogService.ShowAlert(e.Message);
+                await authenticationService.LogoutAsync();
             }
             catch (Exception e)
             {
@@ -98,8 +104,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             AddUsersToChatResponseModel responseModel = await chatsService.AddUsersToChatAsync(chatId, requestModel);
             await GoToPreviousPageAsync();
         }
-
-        //private async void Check
 
         private async void OnCancel()
         {

@@ -1,17 +1,7 @@
-﻿using dotNET_Chat_Xamarin_Forms_Client.Models;
-using dotNET_Chat_Xamarin_Forms_Client.Models.Request;
-using dotNET_Chat_Xamarin_Forms_Client.Services;
+﻿using dotNET_Chat_Xamarin_Forms_Client.Services;
 using dotNET_Chat_Xamarin_Forms_Client.Views;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Mime;
 using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
@@ -55,6 +45,8 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             propertiesService = DependencyService.Get<IPropertiesService>();
             PropertyChanged +=
                 (_, __) => LoginCommand.ChangeCanExecute();
+
+            authenticationService.LogInIfValidTokenAsync();
         }
 
         private bool ValidateFields(object arg)
@@ -75,7 +67,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             }
             await propertiesService.SetJwtTokenAsync(responseModel.Token);
             await propertiesService.SetUserNameAsync(UserName);
-            // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
             await Shell.Current.GoToAsync($"//{nameof(ChatsPage)}");
         }
 

@@ -1,11 +1,8 @@
 ﻿using dotNET_Chat_Xamarin_Forms_Client.Models.Response;
 using dotNET_Chat_Xamarin_Forms_Client.Services;
 using dotNET_Chat_Xamarin_Forms_Client.Views;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
@@ -29,7 +26,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             set
             {
                 SetProperty(ref userName, value);
-                OnPropertyChanged();
             }
         }
 
@@ -39,7 +35,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             set
             {
                 SetProperty(ref email, value);
-                OnPropertyChanged();
             }
         }
 
@@ -84,7 +79,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                 return;
             }
 
-            AuthenticationResponseModel responseModel = await authenticationService.Register(UserName, Email, Password);
+            AuthenticationResponseModel responseModel = await authenticationService.RegisterAsync(UserName, Email, Password);
             if (!responseModel.Success)
             {
                 StringBuilder stringBuilder = new StringBuilder();

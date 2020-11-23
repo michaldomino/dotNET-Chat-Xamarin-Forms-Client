@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace dotNET_Chat_Xamarin_Forms_Client.ValueModels
 {
     public static class ApiRoutesModel
     {
-        private const string API = "http://192.168.1.87:49375/api";
+        private const string SERVER_URL = "http://localhost:5000"; // insert server url here
+        private const string API = SERVER_URL + "/api";
         public static class Authentication
         {
             private const string AUTHENTICATION = API + "/Authentication";

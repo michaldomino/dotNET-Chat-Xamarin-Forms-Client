@@ -2,9 +2,7 @@
 using dotNET_Chat_Xamarin_Forms_Client.Services;
 using dotNET_Chat_Xamarin_Forms_Client.Views;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -15,6 +13,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         private Chat selectedChat;
         private readonly IApplicationUsersService applicationUsersService;
         private readonly IDialogService dialogService;
+        private readonly IAuthenticationService authenticationService;
 
         public ObservableCollection<Chat> Chats { get; }
         public Command LoadChatsCommand { get; }
@@ -35,6 +34,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         {
             applicationUsersService = DependencyService.Get<IApplicationUsersService>();
             dialogService = DependencyService.Get<IDialogService>();
+            authenticationService = DependencyService.Get<IAuthenticationService>();
 
             Title = "Select chat";
             PropertiesService propertiesService = new PropertiesService();
@@ -57,6 +57,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                 {
                     Chats.Add(chat);
                 }
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                await dialogService.ShowAlert(e.Message);
+                await authenticationService.LogoutAsync();
             }
             catch (Exception e)
             {
@@ -85,7 +90,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             if (chat == null)
                 return;
 
-            // This will push the ItemDetailPage onto the navigation stack
             await Shell.Current.GoToAsync($"{nameof(ChatMessagesPage)}?{nameof(ChatMessagesViewModel.ChatId)}={chat.Id}");
         }
     }

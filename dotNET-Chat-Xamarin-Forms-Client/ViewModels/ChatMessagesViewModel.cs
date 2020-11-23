@@ -3,10 +3,8 @@ using dotNET_Chat_Xamarin_Forms_Client.Models.Request;
 using dotNET_Chat_Xamarin_Forms_Client.Services;
 using dotNET_Chat_Xamarin_Forms_Client.Views;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -17,6 +15,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
     {
         private readonly IChatsService chatService;
         private readonly IDialogService dialogService;
+        private readonly IAuthenticationService authenticationService;
         private string text;
         private Guid chatId;
         private string newMessageText;
@@ -48,11 +47,19 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
         {
             chatService = DependencyService.Get<IChatsService>();
             dialogService = DependencyService.Get<IDialogService>();
+            authenticationService = DependencyService.Get<IAuthenticationService>();
 
             Messages = new ObservableCollection<Message>();
             LoadMessagesCommand = new Command(async () => await ExecuteLoadMessagesCommand());
-            SendMessageCommand = new Command(OnSendMessage);
+            SendMessageCommand = new Command(OnSendMessage, ValidateSend);
             AddUsersCommand = new Command(OnAddUsers);
+            PropertyChanged +=
+                (_, __) => SendMessageCommand.ChangeCanExecute();
+        }
+
+        private bool ValidateSend()
+        {
+            return !string.IsNullOrWhiteSpace(NewMessageText);
         }
 
         private async Task ExecuteLoadMessagesCommand()
@@ -67,6 +74,11 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
                 {
                     Messages.Add(message);
                 }
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                await dialogService.ShowAlert(e.Message);
+                await authenticationService.LogoutAsync();
             }
             catch (Exception e)
             {
@@ -83,17 +95,31 @@ namespace dotNET_Chat_Xamarin_Forms_Client.ViewModels
             IsBusy = true;
         }
 
-        private async void OnSendMessage(object obj)
+        private async void OnSendMessage()
         {
-            NewMessageRequestModel newMessageRequest = new NewMessageRequestModel
+            try
             {
-                Text = NewMessageText
-            };
-            Message createdMessage = await chatService.SendMessageAsync(chatId, newMessageRequest);
-            Messages.Add(createdMessage);
+                NewMessageRequestModel newMessageRequest = new NewMessageRequestModel
+                {
+                    Text = NewMessageText
+                };
+                Message createdMessage = await chatService.SendMessageAsync(chatId, newMessageRequest);
+                createdMessage.CreationTime = TimeZoneInfo.ConvertTimeFromUtc(createdMessage.CreationTime, TimeZoneInfo.Local);
+                Messages.Add(createdMessage);
+                NewMessageText = "";
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                await dialogService.ShowAlert(e.Message);
+                await authenticationService.LogoutAsync();
+            }
+            catch (Exception e)
+            {
+                await dialogService.ShowAlert(e.Message);
+            }
         }
 
-        private async void OnAddUsers(object obj)
+        private async void OnAddUsers()
         {
             await Shell.Current.GoToAsync($"{nameof(AddUsersToChatPage)}?{nameof(AddUsersToChatViewModel.ChatId)}={chatId}");
         }

@@ -3,15 +3,10 @@ using dotNET_Chat_Xamarin_Forms_Client.Models.Request;
 using dotNET_Chat_Xamarin_Forms_Client.Models.Response;
 using dotNET_Chat_Xamarin_Forms_Client.Services.Base;
 using dotNET_Chat_Xamarin_Forms_Client.ValueModels;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace dotNET_Chat_Xamarin_Forms_Client.Services
 {
@@ -38,7 +33,9 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
 
         public async Task<List<Message>> GetMessagesAsync(Guid chatId)
         {
-            return await GetRequest<List<Message>>(ApiRoutesModel.Chats.GetMessages(chatId));
+            List<Message> messages = await GetRequest<List<Message>>(ApiRoutesModel.Chats.GetMessages(chatId));
+            messages.ForEach(it => it.CreationTime = TimeZoneInfo.ConvertTimeFromUtc(it.CreationTime, TimeZoneInfo.Local));
+            return messages;
         }
 
         public async Task<Message> SendMessageAsync(Guid chatId, NewMessageRequestModel requestModel)

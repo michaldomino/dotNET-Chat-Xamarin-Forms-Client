@@ -4,16 +4,27 @@ using dotNET_Chat_Xamarin_Forms_Client.ValueModels;
 using dotNET_Chat_Xamarin_Forms_Client.Views;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace dotNET_Chat_Xamarin_Forms_Client.Services
 {
     class AuthenticationService : IAuthenticationService
     {
+        private readonly IPropertiesService propertiesService;
+        private readonly IDialogService dialogService;
+        private readonly IApplicationUsersService applicationUsersService;
+
+        public AuthenticationService()
+        {
+            propertiesService = DependencyService.Get<IPropertiesService>();
+            dialogService = DependencyService.Get<IDialogService>();
+            applicationUsersService = DependencyService.Get<IApplicationUsersService>();
+        }
+
         public async Task<AuthenticationResponseModel> LoginAsync(string userName, string password)
         {
             LoginRequestModel loginRequest = new LoginRequestModel
@@ -24,7 +35,7 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
             return await GetResponse(loginRequest, ApiRoutesModel.Authentication.Login);
         }
 
-        public async Task<AuthenticationResponseModel> Register(string userName, string email, string password)
+        public async Task<AuthenticationResponseModel> RegisterAsync(string userName, string email, string password)
         {
             RegisterRequestModel loginRequest = new RegisterRequestModel
             {
@@ -33,6 +44,12 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
                 Password = password
             };
             return await GetResponse(loginRequest, ApiRoutesModel.Authentication.Register);
+        }
+
+        public async Task LogoutAsync()
+        {
+            await propertiesService.ResetUserAsync();
+            await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
         }
 
         private static async Task<AuthenticationResponseModel> GetResponse(object requestModel, string route)
@@ -60,6 +77,35 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
                 Success = false,
                 Errors = new[] { "Request failed" }
             };
+        }
+
+        public async Task LogInIfValidTokenAsync()
+        {
+            bool isTokenValid = await IsTokenValid();
+            if (isTokenValid)
+            {
+                await Shell.Current.GoToAsync($"//{nameof(ChatsPage)}");
+            }
+        }
+
+        private async Task<bool> IsTokenValid()
+        {
+            string token = propertiesService.GetJwtToken();
+            string userName = propertiesService.GetUserName();
+            string[] userProperties = { token, userName };
+            if (userProperties.Any(it => string.IsNullOrEmpty(it)))
+            {
+                return false;
+            }
+            try
+            {
+                await applicationUsersService.GetApplicationUsersAsync();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

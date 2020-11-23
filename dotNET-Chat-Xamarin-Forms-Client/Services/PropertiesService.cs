@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace dotNET_Chat_Xamarin_Forms_Client.Services
@@ -44,6 +41,12 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
         public async Task SetUserNameAsync(string value)
         {
             await SetPropertyValueAsync(USER_NAME_KEY, value);
+        }
+
+        public async Task ResetUserAsync()
+        {
+            await SetJwtTokenAsync(null);
+            await SetUserNameAsync(null);
         }
     }
 }

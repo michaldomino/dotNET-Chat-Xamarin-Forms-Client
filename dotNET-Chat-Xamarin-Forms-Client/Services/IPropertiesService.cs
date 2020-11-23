@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace dotNET_Chat_Xamarin_Forms_Client.Services
 {
@@ -12,5 +9,6 @@ namespace dotNET_Chat_Xamarin_Forms_Client.Services
         
         string? GetUserName();
         Task SetUserNameAsync(string value);
+        Task ResetUserAsync();
     }
 }
